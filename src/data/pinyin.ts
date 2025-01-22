@@ -54,7 +54,7 @@ export const consonants: PinyinData[] = [
   { type: 'consonant', pinyin: 'zh', audioUrl: '/audio/t_zhi1.mp3' },
   { type: 'consonant', pinyin: 'ch', audioUrl: '/audio/t_chi1.mp3' },
   { type: 'consonant', pinyin: 'sh', audioUrl: '/audio/t_shi1.mp3' },
-  { type: 'consonant', pinyin: 'r', audioUrl: '/audio/t_ri1.mp3' },
+  { type: 'consonant', pinyin: 'r', audioUrl: '/audio/t_ri4.mp3' },
   { type: 'consonant', pinyin: 'z', audioUrl: '/audio/t_zi1.mp3' },
   { type: 'consonant', pinyin: 'c', audioUrl: '/audio/t_ci1.mp3' },
   { type: 'consonant', pinyin: 's', audioUrl: '/audio/t_si1.mp3' },
