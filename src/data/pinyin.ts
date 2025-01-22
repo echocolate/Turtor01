@@ -17,7 +17,7 @@ export const vowels: PinyinData[] = [
   // 复韵母
   { type: 'vowel', pinyin: 'ai', audioUrl: '/audio/t_ai1.mp3' },
   { type: 'vowel', pinyin: 'ei', audioUrl: '/audio/t_ei1.mp3' },
-  { type: 'vowel', pinyin: 'ui', audioUrl: '/audio/t_ui1.mp3' },
+  { type: 'vowel', pinyin: 'ui', audioUrl: '/audio/t_wei1.mp3' },
   { type: 'vowel', pinyin: 'ao', audioUrl: '/audio/t_ao1.mp3' },
   { type: 'vowel', pinyin: 'ou', audioUrl: '/audio/t_ou1.mp3' },
   { type: 'vowel', pinyin: 'iu', audioUrl: '/audio/t_you1.mp3' },

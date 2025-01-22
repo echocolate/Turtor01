@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PinyinData, getRandomPinyin, generateAnswerOptions } from '../data/pinyin';
 import { getRandomPraiseAudio, getRandomEncourageAudio } from '../data/audioFeedback';
 import { GAME_TEXTS, FEEDBACK_TEXTS, AUDIO_PATHS, GAME_CONFIG, SCORE_LEVELS } from '../data/const';
@@ -23,6 +23,7 @@ interface GameState {
 }
 
 const PinyinGame: React.FC = () => {
+  const navigate = useNavigate();
   // 移除不需要的状态
   const [showFireworks, setShowFireworks] = useState(false);
 
@@ -157,19 +158,19 @@ const PinyinGame: React.FC = () => {
       <div className="game-container flex flex-col items-center justify-center">
         <div className="content-wrapper">
           <h1 className="text-4xl font-bold mb-8">{GAME_TEXTS.TITLE}</h1>
-          <div className="flex gap-4">
+          <div className="flex gap-12 justify-center w-full max-w-2xl mx-auto">
             <button
               onClick={startGame}
-              className="btn-base bg-blue-500 text-white px-8 py-4 text-2xl hover:bg-blue-600 flex-1"
+              className="btn-base bg-blue-500 text-white px-10 py-4 text-2xl margin:1em hover:bg-blue-600 flex-1 max-w-xs"
             >
               {GAME_TEXTS.START_BUTTON}
             </button>
-            <Link
-              to="/pinyin-list"
-              className="btn-base bg-blue-500 text-white px-8 py-4 text-2xl hover:bg-blue-600 flex-1 inline-flex items-center justify-center"
+            <button
+              onClick={() => navigate('/pinyin-list')}
+              className="btn-base bg-blue-500 text-white px-10 py-4 text-2xl margin:1em hover:bg-blue-600 flex-1 max-w-xs inline-flex items-center justify-center"
             >
               {GAME_TEXTS.PINYIN_LIST}
-            </Link>
+            </button>
           </div>
           <audio ref={audioRef} preload="auto" />
         </div>
