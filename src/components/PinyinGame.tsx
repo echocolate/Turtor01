@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { PinyinData, getRandomPinyin, generateAnswerOptions } from '../data/pinyin';
 import { getRandomPraiseAudio, getRandomEncourageAudio } from '../data/audioFeedback';
 import { GAME_TEXTS, FEEDBACK_TEXTS, AUDIO_PATHS, GAME_CONFIG, SCORE_LEVELS } from '../data/const';
@@ -22,6 +23,7 @@ interface GameState {
 }
 
 const PinyinGame: React.FC = () => {
+  // 移除不需要的状态
   const [showFireworks, setShowFireworks] = useState(false);
 
   const [gameState, setGameState] = useState<GameState>({
@@ -35,7 +37,21 @@ const PinyinGame: React.FC = () => {
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const startGame = () => {
+  // 初始化音频元素
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.addEventListener('error', (e) => {
+        console.error('音频加载错误:', e);
+      });
+    }
+  }, []);
+
+  const startGame = async () => {
+    if (!audioRef.current) {
+      console.error('音频元素未初始化');
+      return;
+    }
+
     setGameState({
       currentQuestion: null,
       options: [],
@@ -44,12 +60,14 @@ const PinyinGame: React.FC = () => {
       gameStatus: 'playing',
       feedback: 'none',
     });
-    generateQuestion();
+
+    await generateQuestion();
   };
 
-  const generateQuestion = () => {
+  const generateQuestion = async () => {
     const question = getRandomPinyin();
     const options = generateAnswerOptions(question);
+    
     setGameState(prev => ({
       ...prev,
       currentQuestion: question,
@@ -57,38 +75,27 @@ const PinyinGame: React.FC = () => {
       feedback: 'none',
     }));
 
-    // 播放音频
     if (audioRef.current) {
       try {
-        console.log('正在加载拼音音频:', question.audioUrl);
         audioRef.current.src = question.audioUrl;
-        audioRef.current.load();
-        
-        const playAudio = async () => {
-          try {
-            await audioRef.current?.play();
-            console.log('音频播放成功:', question.audioUrl);
-          } catch (error) {
-            console.error('音频播放失败:', question.audioUrl, error);
-            // 尝试重新加载并播放
-            if (audioRef.current) {
-              audioRef.current.load();
-              try {
-                await audioRef.current.play();
-                console.log('音频重试播放成功:', question.audioUrl);
-              } catch (retryError) {
-                console.error('音频重试播放失败:', question.audioUrl, retryError);
-              }
-            }
-          }
-        };
-        
-        playAudio();
+        await audioRef.current.load();
+        await audioRef.current.play();
       } catch (error) {
-        console.error('音频初始化失败:', error);
+        console.error('音频播放失败:', error);
       }
-    } else {
-      console.error('音频元素未初始化');
+    }
+  };
+
+  const replayAudio = async () => {
+    if (!audioRef.current || !gameState.currentQuestion) return;
+
+    try {
+      audioRef.current.src = gameState.currentQuestion.audioUrl;
+      audioRef.current.currentTime = 0;
+      await audioRef.current.load();
+      await audioRef.current.play();
+    } catch (error) {
+      console.error('重播音频失败:', error);
     }
   };
 
@@ -144,23 +151,27 @@ const PinyinGame: React.FC = () => {
     return SCORE_LEVELS.FAIL.text;
   };
 
-  const replayAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(console.error);
-    }
-  };
-
+  // 渲染开始界面
   if (gameState.gameStatus === 'start') {
     return (
       <div className="game-container flex flex-col items-center justify-center">
         <div className="content-wrapper">
           <h1 className="text-4xl font-bold mb-8">{GAME_TEXTS.TITLE}</h1>
-          <button
-            onClick={startGame}
-            className="btn-base bg-blue-500 text-white px-8 py-4 text-2xl hover:bg-blue-600"
-          >
-            {GAME_TEXTS.START_BUTTON}
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={startGame}
+              className="btn-base bg-blue-500 text-white px-8 py-4 text-2xl hover:bg-blue-600 flex-1"
+            >
+              {GAME_TEXTS.START_BUTTON}
+            </button>
+            <Link
+              to="/pinyin-list"
+              className="btn-base bg-blue-500 text-white px-8 py-4 text-2xl hover:bg-blue-600 flex-1 inline-flex items-center justify-center"
+            >
+              {GAME_TEXTS.PINYIN_LIST}
+            </Link>
+          </div>
+          <audio ref={audioRef} preload="auto" />
         </div>
       </div>
     );

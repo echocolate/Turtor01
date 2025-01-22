@@ -1,12 +1,17 @@
 import PinyinGame from './components/PinyinGame'
+import PinyinListPage from './pages/PinyinListPage'
 import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="app">
-      <PinyinGame />
-    </div>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/" element={<PinyinGame />} />
+        <Route path="/pinyin-list" element={<PinyinListPage />} />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;
